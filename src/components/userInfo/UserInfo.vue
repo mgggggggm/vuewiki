@@ -3,21 +3,24 @@
    <div>
       <v-nav></v-nav>
       <div class="content">
-
         <el-tabs type="border-card"  :tab-position="tabPosition" @tab-click="tabs">
-
           <el-tab-pane label="用户信息">
+            <router-view name="message"/>
           </el-tab-pane>
           <el-tab-pane label="我的头像">
+            <router-view name="avatar"/>
           </el-tab-pane>
           <el-tab-pane label="安全中心">
+            <router-view name="safe"/>
           </el-tab-pane>
           <el-tab-pane label="个人空间">
+            <router-view name="space"/>
           </el-tab-pane>
           <el-tab-pane label="我的积分">
           </el-tab-pane>
+
         </el-tabs>
-        <router-view/>
+
       </div>
   </div>
 </template>
@@ -47,7 +50,6 @@
 <script>
   import $ from 'jquery'
   import TopNav from '../divComponents/TopNav'
-  import Cookies from 'js-cookie'
     export default {
       components:{
         'v-nav':TopNav
@@ -56,17 +58,9 @@
       data() {
         return {
           tabPosition: 'left',
-          logo: require('../image/risu.jpg'),
-          defaultImg: 'this.src="' + require('../image/ddbird.jpg') + '"',
-          img: {url: ''},
-          search: '',
-          user: [],
         }
       },
       methods:{
-        logout(){
-          Cookies.remove('username')
-        },
         tabs(data){
           console.log(data.label)
           if(data.label === '用户信息'){

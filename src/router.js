@@ -9,6 +9,7 @@ import Message from './components/userInfo/Message'
 import Avatar from './components/userInfo/Avatar'
 import Safe from './components/userInfo/Safe'
 import Space from './components/userInfo/Space'
+import AvatarChange from './components/userInfo/AvatarChange'
 Vue.use(Router)
 
 const router = new Router({
@@ -49,16 +50,36 @@ const router = new Router({
       component: UserInfo,
       children: [{
           path: 'message',
-          component: Message,
+        components:{
+          default: Message,
+          message: Message,
+        }
+
         }, {
           path: 'avatar',
-          component: Avatar,
+          components:{
+            default: Avatar,
+            avatar: Avatar,
+          },
+          children: [{
+            path: 'changeAvatar',
+            components: {
+              default: AvatarChange,
+              changeAvatar:AvatarChange,
+            },
+          }]
         }, {
           path: 'safe',
-          component: Safe,
+          components:{
+            default: Safe,
+            safe: Safe,
+          }
         }, {
           path: 'space',
-          component: Space,
+          components:{
+            default: Space,
+            space: Space,
+          }
         }
         ]
     },

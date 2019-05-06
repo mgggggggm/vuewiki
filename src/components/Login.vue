@@ -76,7 +76,7 @@
     import { mapMutations } from 'vuex'
     import { activePower } from "./js/active_power"
     import QS from 'qs'
-    import Cookie from 'js-cookie'
+    import Cookies from 'js-cookie'
     export default {
         name:'login',
         data() {
@@ -114,10 +114,10 @@
               _self.isLoading = true
               this.$axios.post('/api/login', QS.stringify(_self.loginForm))
                 .then(res => {
-                    console.log(res.data);
+                    // console.log(res.data);
                     _self.userToken = 'Bearer ' + res.data.data
-                    Cookie.set('token', res.data.data)
-                    Cookie.set('username',_self.loginForm.username)
+                    Cookies.set('token', _self.userToken)
+                    Cookies.set('username',_self.loginForm.username)
                     // _self.changeLogin({Authorization:_self.userToken});
                     localStorage.setItem('Authorization', _self.userToken)
                     if(res.data.errcode === 0){

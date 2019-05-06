@@ -1,12 +1,18 @@
 <template>
-       
-    <div> {{msg}}</div>
+  <div class="main">
+    {{msg}}
+  </div>
 </template>
-<style></style>
+<style scoped>
+  .main{
+    width: 1000px;
+    word-wrap: break-word;
+  }
+</style>
 <script>
-    export default {
-        data() {
-            return {msg: 'vue模板页'}
-        }
+  export default {
+    data() {
+      return {msg: '安全中心'}
     }
+  }
 </script>

@@ -22,8 +22,7 @@
       </el-submenu>
       <el-submenu index="4" popper-class="test">
         <template slot="title"><a href="">动态</a></template>
-        <el-menu-item index="4-1"><a href="">我的消息</a></el-menu-item>
-        <el-menu-item index="4-2"><a href="">系统通知</a></el-menu-item>
+        <el-menu-item index="4-1"><a href="">最新动态</a></el-menu-item>
       </el-submenu>
       <el-submenu index="5" popper-class="test">
         <template slot="title"><a href="">收藏</a></template>
@@ -128,7 +127,6 @@
               _self.unLogin = false;
               _self.hasLogin = true;
               _self.user = result.data;
-              console.log(result.data);
             },
             error:function(jqXHR, textStatus, errorThrown){
               console.log("请求失败");
@@ -142,6 +140,12 @@
               console.log(errorThrown);
             }
           })
+        }else if(window.location.href==='http://127.0.0.1:8081/main'){
+
+        }
+        else {
+          alert("请先登录！");
+          this.$router.push('/login');
         }
 
       },
