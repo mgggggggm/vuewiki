@@ -100,6 +100,7 @@
   }
 </style>
 <script>
+  import { mapMutations } from 'vuex'
   import $ from 'jquery'
   import Cookies from 'js-cookie'
     export default {
@@ -113,20 +114,23 @@
             search:'',
           }
       },
+
       mounted: function() {
         let _self=this;
         if(null!=Cookies.get('username')){
           $.ajax({
-            headers:{'Authorization':localStorage.getItem('Authorization')},
+            headers:{'Authorization':Cookies.get('token')},
             url:"/api/loadUserByUsername?username="+Cookies.get('username'),
             type:"get",
             dataType: "JSON",
             withCredentials: true,
             success:function(result){
+              console.log(result.data)
               // debugger
               _self.unLogin = false;
               _self.hasLogin = true;
-              _self.user = result.data;
+              _self.user = result.data.content;
+              _self.getUser(_self.user)
             },
             error:function(jqXHR, textStatus, errorThrown){
               console.log("请求失败");
@@ -150,8 +154,10 @@
 
       },
       methods:{
+        ...mapMutations(['getUser']),
         logout(){
           Cookies.remove('username')
+          Cookies.remove('token')
         }
       },
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item :to="{ path: '/userInfo/avatar' }">我的头像</el-breadcrumb-item>
+      <el-breadcrumb-item><a href="/userInfo/avatar">我的头像</a></el-breadcrumb-item>
       <el-breadcrumb-item v-show="unShow">修改头像</el-breadcrumb-item>
     </el-breadcrumb>
 
@@ -27,7 +27,7 @@
       return {
         unShow: false,
         show: true,
-        src : require('../image/risu.jpg'),
+        src : 'https://mgggggggm-1257270534.cos.ap-shanghai.myqcloud.com/05.jpg',
         avatar: '',
         userId: '',
         userInfo: '',
@@ -70,8 +70,8 @@
           success: function (result) {
             _self.userInfo = result.data;
             _self.avatar = result.data.content.avatar;
-            console.log(result.data)
-            console.log(result.data.content.avatar)
+            // console.log(result.data)
+            // console.log(result.data.content.avatar)
           },
           error: function (jqXHR, textStatus, errorThrown) {
             console.log("请求失败");
@@ -93,7 +93,7 @@
         this.unShow = true;
         this.show = false;
         this.$router.push('/userInfo/avatar/changeAvatar')
-      }
+      },
     }
   }
 </script>

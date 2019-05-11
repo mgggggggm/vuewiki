@@ -50,10 +50,7 @@ const router = new Router({
       component: UserInfo,
       children: [{
           path: 'message',
-        components:{
-          default: Message,
-          message: Message,
-        }
+        component:Message,
 
         }, {
           path: 'avatar',

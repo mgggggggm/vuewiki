@@ -94,7 +94,8 @@
                   {required: true, message: '请输入密码'},
                 ],
               },
-              userToken: ''
+              userToken: '',
+              userMsg: ''
             }
         },
       methods: {
@@ -107,21 +108,24 @@
           })
         },
         ...mapMutations(['changeLogin']),
+        ...mapMutations(['getUser']),
         login() {
-            var _self = this;
+            let _self = this;
             _self.$refs['loginForm'].validate((valid) => {
             if (valid) {
               _self.isLoading = true
               this.$axios.post('/api/login', QS.stringify(_self.loginForm))
                 .then(res => {
-                    // console.log(res.data);
-                    _self.userToken = 'Bearer ' + res.data.data
-                    Cookies.set('token', _self.userToken)
-                    Cookies.set('username',_self.loginForm.username)
-                    // _self.changeLogin({Authorization:_self.userToken});
-                    localStorage.setItem('Authorization', _self.userToken)
+                    _self.userToken = 'Bearer ' + res.data.data.token
+                    _self.userMsg =  res.data.data.user
+                    Cookies.set('token', _self.userToken,7*24*60*60*1000)
+                    Cookies.set('username',_self.loginForm.username,7*24*60*60*1000)
+                    // console.log(Cookies.get('token'))
+                    // console.log(res.data.data.user)
+                    this.getUser(_self.userMsg)
+                    this.changeLogin(_self.userToken)
                     if(res.data.errcode === 0){
-                      _self.$router.push('/main')
+                          _self.$router.push('/main')
                     }else{
                       _self.$message.error('用户名或密码输入错误');
                     }

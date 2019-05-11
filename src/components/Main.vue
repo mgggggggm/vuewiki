@@ -12,7 +12,7 @@
         </el-carousel>
       </div>
       <div class="content_mid_one">
-        <ul v-for="item in user">
+        <ul v-if="user" v-for="item in user">
           <li>{{item.username}}</li>
         </ul>
       </div>
@@ -42,8 +42,10 @@
   }
 </style>
 <script>
+  import $ from 'jquery'
   import TopNav from './divComponents/TopNav'
   import Cookies from 'js-cookie'
+  import { mapState } from 'vuex'
   export default {
     name: "mainPage",
     components:{
@@ -63,40 +65,15 @@
     },
     mounted: function() {
       let _self = this;
-      if (null != Cookies.get('username')) {
-        $.ajax({
-          headers: {'Authorization': localStorage.getItem('Authorization')},
-          url: "/api/loadUserByUsername?username=" + Cookies.get('username'),
-          type: "get",
-          dataType: "JSON",
-          withCredentials: true,
-          success: function (result) {
-            _self.user = result.data;
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-            console.log("请求失败");
-            /*弹出jqXHR对象的信息*/
-            console.log(jqXHR.responseText);
-            console.log(jqXHR.status);
-            console.log(jqXHR.readyState);
-            console.log(jqXHR.statusText);
-            /*弹出其他两个参数的信息*/
-            console.log(textStatus);
-            console.log(errorThrown);
-          }
-        })
-      } else if(window.location.href==='http://127.0.0.1:8081/main'){
-
-        }
-        else {
-          this.$router.push('/login');
-          alert("请先登录！");
+      if (undefined!=this.$store.state.User) {
+            _self.user = _self.$store.state.User
+            console.log(_self.$store.state)
+      }
+      else {
+        _self.user = []
+        _self.$router.push('/login');
+        alert("请先登录！");
       }
     },
-    watch:{
-
-    },
-    computed:{
-    }
   }
 </script>
