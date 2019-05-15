@@ -7,10 +7,15 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import 'element-ui/lib/theme-chalk/index.css'
 import Vuex from 'vuex'
+import Video from 'video.js'
+import 'video.js/dist/video-js.css'
+
+
 Vue.use(Vuex)
 Vue.use(ElementUI)
 Vue.use(VueAxios,axios)
 Vue.prototype.$axios=axios
+Vue.prototype.$video = Video
 Vue.config.productionTip = false
 
 axios.interceptors.response.use(

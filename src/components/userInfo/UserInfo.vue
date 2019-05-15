@@ -19,6 +19,13 @@
           </el-tab-pane>
           <el-tab-pane label="我的积分" name="five">
           </el-tab-pane>
+          <el-tab-pane label="我的积分1" name="five1">
+          </el-tab-pane>
+          <el-tab-pane label="我的积分2" name="five2">
+          </el-tab-pane>
+          <el-tab-pane label="我的积分3" name="five3">
+          </el-tab-pane>
+
 
         </el-tabs>
 
@@ -28,8 +35,13 @@
 <style scoped>
   /deep/.el-tabs--left.el-tabs--border-card .el-tabs__header.is-left{
     margin-left: 11rem;
-    height: 25rem;
+    height: 31rem;
 
+  }
+  /deep/.el-tabs--border-card>.el-tabs__content{
+    width: 900px;
+    border-right: 1px solid lightgray;
+    height: 30em;
   }
   /deep/.el-tabs--border-card>.el-tabs__header .el-tabs__item:not(.is-disabled):hover{
     color: white;
@@ -59,7 +71,7 @@
       name: "UserInfo",
       data() {
         return {
-          activeName: localStorage.getItem('activeName'),
+          activeName: '',
           tabPosition: 'left',
         }
       },
@@ -68,22 +80,16 @@
           if(data.label === '用户信息'){
             this.$router.push('/userInfo/message')
             this.activeName = data.name
-            localStorage.setItem('activeName',this.activeName);
-            console.log(this.activeName)
 
           }
           if(data.label === '我的头像'){
             this.$router.push('/userInfo/avatar')
             this.activeName = data.name
-            localStorage.setItem('activeName',this.activeName);
-            console.log(this.activeName)
 
           }
           if(data.label === '安全中心'){
             this.$router.push('/userInfo/safe')
             this.activeName = data.name
-            localStorage.setItem('activeName',this.activeName);
-            console.log(this.activeName)
 
           }
           if(data.label === '个人空间'){

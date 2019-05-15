@@ -98,6 +98,9 @@
               userMsg: ''
             }
         },
+      created:function(){
+          this.$store.state.User = []
+      },
       methods: {
         activePower1() {
           $(document).ready(function() {

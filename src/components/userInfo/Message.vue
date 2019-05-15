@@ -12,18 +12,18 @@
           <el-input  :disabled="true" v-model="username">{{username}}</el-input>
         </el-form-item>
         <el-form-item label="性别:">
-          <el-radio v-model="form.radio" label="1">男</el-radio>
-          <el-radio v-model="form.radio" label="2">女</el-radio>
-          <el-radio v-model="form.radio" label="3">保密</el-radio>
+          <el-radio v-model="form.sex" label="男">男</el-radio>
+          <el-radio v-model="form.sex" label="女">女</el-radio>
+          <el-radio v-model="form.sex" label="保密">保密</el-radio>
         </el-form-item>
         <el-form-item label="出生日期:">
-            <el-date-picker type="date" placeholder="选择日期" v-model="form.date" style="width: 22%"></el-date-picker>
+            <el-date-picker type="date" placeholder="选择日期" v-model="form.birthday" style="width: 22%"></el-date-picker>
         </el-form-item>
         <el-form-item label="签名:">
-          <el-input  type="textarea" v-model="form.sign" style="width: 50%;height: 88px"></el-input>
+          <el-input  type="textarea" v-model="form.synopsis" style="width: 50%;height: 88px"></el-input>
         </el-form-item>
       </el-form>
-      <el-button @click="sub">提交</el-button>
+      <el-button @click="sub" style="margin-left: 5.5em">提交</el-button>
     </div>
 </template>
 <style scoped>
@@ -48,54 +48,60 @@
         data() {
             return {
               form:{
+                id: '',
                 nickname: '',
-                radio: '1',
-                date: '',
-                sign: '',
+                avatar:'',
+                sex: '',
+                birthday: '',
+                synopsis: '',
               },
               unShow: false,
-              user:[],
               username:'',
+              userId: '',
               userInfo:[],
             }
         },
       mounted: function() {
         let _self = this;
-        if(null!=Cookies.get('username')){
-          $.ajax({
-            headers:{'Authorization':Cookies.get('token')},
-            url:"/api/loadUserByUsername?username="+Cookies.get('username'),
-            type:"get",
-            dataType: "JSON",
-            withCredentials: true,
-            success:function(result){
-              console.log(result.data.content.username)
-              // debugger
-              _self.username = result.data.content.username;
-              // _self.getUser(_self.user)
-            },
-            error:function(jqXHR, textStatus, errorThrown){
-              console.log("请求失败");
-              /*弹出jqXHR对象的信息*/
-              console.log(jqXHR.responseText);
-              console.log(jqXHR.status);
-              console.log(jqXHR.readyState);
-              console.log(jqXHR.statusText);
-              /*弹出其他两个参数的信息*/
-              console.log(textStatus);
-              console.log(errorThrown);
-            }
-          })
+        function runAsync(){
+          let p = new Promise(function(resolve, reject){
+            //做一些异步操作
+            setTimeout(function(){
+              // console.log('执行完成');
+              resolve(_self.$store.state.User);
+            }, 100);
+          });
+          return p;
         }
+        runAsync().then(function(data){
+          _self.$axios.get('/api/selectUserInfoById?id='+data[0].id,{headers :{'Authorization':Cookies.get('token')}})
+            .then(res => {
+              // _self.avatar = res.data.data.content.avatar
+              _self.userInfo = res.data.data.content
+              _self.form.id = data[0].id
+              _self.form.nickname = res.data.data.content.nickname
+              // _self.form.avatar = res.data.data.content.avatar
+              _self.form.sex = res.data.data.content.sex
+              _self.form.birthday = res.data.data.content.birthday
+              _self.form.synopsis = res.data.data.content.synopsis
+              _self.username = data[0].username
+              _self.userId =  data[0].id
+              console.log(res.data.data.content.synopsis)
+              // console.log(res.data.data.content)
+            })
+            .catch(err =>{
+              _self.$message.error("获取信息失败")
+            })
+        });
       },
       methods:{
         ...mapMutations(['getUser']),
           sub(){
-              this.$axios.get('/api/updateUserInfo',this.form)
+              this.$axios.post('/api/updateUserInfo?id='+this.userId,this.form,{headers :{'Authorization':Cookies.get('token')}})
                 .then(res=> {
-
+                    this.$message.success("修改成功！")
                   }).catch(err=>{
-
+                    this.$message.error("修改失败！")
               })
           }
       }

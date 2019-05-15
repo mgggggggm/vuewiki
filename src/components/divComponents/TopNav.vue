@@ -12,8 +12,9 @@
       </el-submenu>
       <el-submenu index="2" style="margin-left: 26rem" popper-class="test" v-show="hasLogin">
         <template slot="title" v-show="hasLogin"><a href=""><img style="width: 50px; height: 50px; border-radius: 25px;" :src="img.url" :onerror="defaultImg"/></a></template>
-        <el-menu-item index="2-1" v-show="hasLogin"><a href="/userInfo">个人中心</a></el-menu-item>
-        <el-menu-item index="2-2" v-show="hasLogin"><a href="/main" @click="logout">退出</a></el-menu-item>
+        <el-menu-item index="2-1" v-show="hasLogin" href="/userInfo">{{user.username}}</el-menu-item>
+        <el-menu-item index="2-2" v-show="hasLogin"><a href="/userInfo">个人中心</a></el-menu-item>
+        <el-menu-item index="2-3" v-show="hasLogin"><a href="/main" @click="logout">退出</a></el-menu-item>
       </el-submenu>
       <el-submenu index="3" popper-class="test">
         <template slot="title"><a href="">消息中心</a></template>
@@ -112,6 +113,7 @@
             defaultImg: 'this.src="' + require('../image/ddbird.jpg') + '"',
             img:{url:''},
             search:'',
+            user: [],
           }
       },
 
@@ -125,7 +127,7 @@
             dataType: "JSON",
             withCredentials: true,
             success:function(result){
-              console.log(result.data)
+              // console.log(result.data)
               // debugger
               _self.unLogin = false;
               _self.hasLogin = true;
@@ -143,7 +145,29 @@
               console.log(textStatus);
               console.log(errorThrown);
             }
-          })
+          });
+          function runAsync(){
+            let p = new Promise(function(resolve, reject){
+              //做一些异步操作
+              setTimeout(function(){
+                // console.log('执行完成');
+                resolve(_self.$store.state.User[0].id);
+              }, 100);
+            });
+            return p;
+          }
+          runAsync().then(function(data){
+            _self.$axios.get('/api/selectUserInfoById?id='+data,{headers :{'Authorization':Cookies.get('token')}})
+              .then(res => {
+                _self.img.url = res.data.data.content.avatar
+                _self.userInfo = res.data.data.content
+                console.log(_self.img.url)
+              })
+              .catch(err =>{
+                _self.$message.error("获取信息失败")
+              })
+          });
+
         }else if(window.location.href==='http://127.0.0.1:8081/main'){
 
         }

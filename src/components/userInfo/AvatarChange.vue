@@ -18,6 +18,8 @@
 </template>
 <style scoped>
   .main{
+    text-align: center;
+    margin-top: -160px;
     width: 1000px;
     word-wrap: break-word;
   }
@@ -68,66 +70,38 @@
     mounted: function() {
       this.getQiniuToken();
       let _self = this;
-      if (null != Cookies.get('username')) {
-        //获取user信息
-        $.ajax({
-          headers: {'Authorization': localStorage.getItem('Authorization')},
-          url: "/api/loadUserByUsername?username=" + Cookies.get('username'),
-          type: "get",
-          dataType: "JSON",
-          withCredentials: true,
-          success: function (result) {
-            _self.userId = result.data.content.id;
-            Cookies.set('userId', _self.userId)
-            // console.log(result.data.content.id)
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-            console.log("请求失败");
-            /*弹出jqXHR对象的信息*/
-            console.log(jqXHR.responseText);
-            console.log(jqXHR.status);
-            console.log(jqXHR.readyState);
-            console.log(jqXHR.statusText);
-            /*弹出其他两个参数的信息*/
-            console.log(textStatus);
-            console.log(errorThrown);
-          }
-        })
-        //获取userInfo信息
-        $.ajax({
-          headers: {'Authorization': localStorage.getItem('Authorization')},
-          url: "/api/selectUserInfoById?id=" + Cookies.get('userId'),
-          type: "get",
-          dataType: "JSON",
-          withCredentials: true,
-          success: function (result) {
-            _self.userInfo = result.data;
-            _self.avatar = result.data.content.avatar;
-            // console.log(result.data)
-            // console.log(result.data.content.avatar)
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-            console.log("请求失败");
-            /*弹出jqXHR对象的信息*/
-            console.log(jqXHR.responseText);
-            console.log(jqXHR.status);
-            console.log(jqXHR.readyState);
-            console.log(jqXHR.statusText);
-            /*弹出其他两个参数的信息*/
-            console.log(textStatus);
-            console.log(errorThrown);
-          }
-        })
-
+      function runAsync(){
+        let p = new Promise(function(resolve, reject){
+          //做一些异步操作
+          setTimeout(function(){
+            // console.log('执行完成');
+            resolve(_self.$store.state.User[0].id);
+          }, 1000);
+        });
+        return p;
       }
-    },
+      runAsync().then(function(data){
+        _self.$axios.get('/api/selectUserInfoById?id='+data,{headers :{'Authorization':Cookies.get('token')}})
+          .then(res => {
+            _self.avatar = res.data.data.content.avatar
+            _self.userInfo = res.data.data.content
+            _self.userId = data
+            _self.imageName = res.data.data.content.avatar
+            console.log(res.data.data.content)
+          })
+          .catch(err =>{
+            _self.$message.error("获取信息失败")
+          })
+      });
+
+      },
     methods: {
       handleAvatarSuccess(res, file) {
         this.imageUrl = 'http://'+this.qiniuAddr+'/'+res.key
         this.QiniuData.key = file.raw.name//获取图片名称
         this.imageName = res.key
-        console.log(res)
-        console.log(file)
+        // console.log(res)
+        // console.log(file)
         // console.log(this.imageUrl)
       },
       beforeAvatarUpload(file) {
@@ -155,15 +129,16 @@
           this.$message.error('上传头像图片大小不能超过 2MB!');
           return false;
         }
-        console.log(file)
+        // console.log(file)
         this.QiniuData.key = file.name;
         // return isJPG && isLt2M ;
       },
       upLoad() {
         this.$axios.post("/api/uploadAvatar/"+this.userId,this.imageName,{headers : {'Content-Type':'application/json'}})
-
           .then(response => {
-            console.log(this.imageName)
+            this.$message.success("更新成功！")
+            this.$router.push('/userInfo')
+            // console.log(this.imageName)
             let { code, data } = response.data;
             if (code == "0") {
               this.$message({
@@ -183,9 +158,9 @@
       },
       //请求后台拿七牛云token
       getQiniuToken(){
-        this.$axios.get("/api/getQiniuToken")
+        this.$axios.post("/api/getQiniuToken")
           .then(response => {
-            console.log(response.data.data)
+            // console.log(response)
             this.QiniuData.token = response.data.data;
           })
           .catch(error => {});

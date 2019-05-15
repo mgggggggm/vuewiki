@@ -4,6 +4,7 @@ import Home from './views/Home.vue'
 import Login from './components/Login'
 import Main from './components/Main'
 import Register from './components/Register'
+import Video from './components/video/Video'
 import UserInfo from './components/userInfo/UserInfo'
 import Message from './components/userInfo/Message'
 import Avatar from './components/userInfo/Avatar'
@@ -43,6 +44,11 @@ const router = new Router({
       path: '/register',
       name: 'Register',
       component: Register
+    },
+    {
+      path: '/video',
+      name: 'Video',
+      component: Video
     },
     {
       path: '/userInfo',
